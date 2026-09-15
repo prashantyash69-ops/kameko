@@ -18,11 +18,15 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           
-      - name: Generate Gradle Wrapper
-        run: gradle wrapper --gradle-version 8.4
-        
+      # This step safely provisions Gradle 8.4 instead of using the server's default Gradle 9
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.4'
+            
+      # We now run 'gradle' directly instead of './gradlew'
       - name: Build APK
-        run: ./gradlew assembleDebug
+        run: gradle assembleDebug
         
       - name: Rename APK
         run: mv app/build/outputs/apk/debug/app-debug.apk Kameko.apk
